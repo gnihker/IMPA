@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               //third button: recently use
               const SizedBox(height: 24),
-              const Text('Your recently use model',
+              const Text('Your recently used model',
                   style: TextStyle(fontSize: 16)),
               const SizedBox(height: 8),
               SizedBox(
