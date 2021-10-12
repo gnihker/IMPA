@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "297751767982",
+    "project_id": "impa-2303pk",
+    "storage_bucket": "impa-2303pk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297751767982:android:8f91fe1d4e8ffa5de6363f",
+        "android_client_info": {
+          "package_name": "com.example.impa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "297751767982-0bl07c31koprui6ne3nr6j7b1p6rccen.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.impa",
+            "certificate_hash": "dc6e9e1e7f2e0ce744d0161b493044beb6a63e43"
+          }
+        },
+        {
+          "client_id": "297751767982-df5su54j4lnrfsh4o5d85bbctjn5pfr9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYEssxA21R-ybQfkX8gLqyicl35YxiRXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "297751767982-df5su54j4lnrfsh4o5d85bbctjn5pfr9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
