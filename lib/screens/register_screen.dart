@@ -20,9 +20,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // editing Controller
-  final emailEditingController = new TextEditingController();
-  final passwordEditingController = new TextEditingController();
-  final confirmPasswordEditingController = new TextEditingController();
+  final emailEditingController =  TextEditingController();
+  final passwordEditingController =  TextEditingController();
+  final confirmPasswordEditingController =  TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final passwordField = TextFormField(
       controller: passwordEditingController,
       validator: (value) {
-        RegExp regex = new RegExp(r'^.{6,}$');
+        RegExp regex = RegExp(r'^.{6,}$');
         if (value!.isEmpty) {
           return ("Password is required for login");
         }
@@ -252,7 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
         (route) => false);
   }
 }

@@ -1,11 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/dummy_models.dart';
 import 'model_detail.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Future<void> _logOut() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.popAndPushNamed(context, '/login');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +66,8 @@ class HomeScreen extends StatelessWidget {
                 } else if (result == 1) {
                   Navigator.pushNamed(context, '/changepass');
                 } else if (result == 2) {
-                  Navigator.popAndPushNamed(context, '/login');
+                  //Navigator.popAndPushNamed(context, '/login');
+                  _logOut();
                 }
               },
             ),

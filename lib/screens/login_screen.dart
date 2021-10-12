@@ -13,8 +13,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
 
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       controller: passwordController,
       obscureText: true,
       validator: (value) {
-        RegExp regex = new RegExp(r'^.{6,}$');
+        RegExp regex = RegExp(r'^.{6,}$');
         if (value!.isEmpty) {
           return ("Password is required for login");
         }
@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
           .then((uid) => {
                 Fluttertoast.showToast(msg: "Login Successful"),
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomeScreen())),
+                    MaterialPageRoute(builder: (context) => const HomeScreen())),
               })
           .catchError((e) {
         Fluttertoast.showToast(msg: e!.message);

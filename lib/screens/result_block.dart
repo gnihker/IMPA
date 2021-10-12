@@ -21,15 +21,15 @@ class ResultBox extends StatelessWidget {
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                 'Model label: ' + result.label,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
               Text(
                 'Result: ' + result.result,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
               Text(
                 'Date: ' + result.date,
-                style: TextStyle(fontSize: 12),
+                style: const TextStyle(fontSize: 12),
               ),
             ]),
             Image(
