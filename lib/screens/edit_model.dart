@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_application/models/model.dart';
+import '/models/model.dart';
 
 class EditModelScreen extends StatefulWidget {
   const EditModelScreen({Key? key, required this.thismod}) : super(key: key);

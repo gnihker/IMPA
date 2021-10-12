@@ -1,18 +1,22 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application/screens/add_new_model.dart';
-import 'package:flutter_application/screens/change_pass_screen.dart';
-import 'package:flutter_application/screens/forget_pass_screen.dart';
-import 'package:flutter_application/screens/model_library.dart';
-import 'package:flutter_application/screens/my_models.dart';
-import 'package:flutter_application/screens/register_screen.dart';
-import 'package:flutter_application/screens/result_hist_screen.dart';
+import 'screens/add_new_model.dart';
+import 'screens/change_pass_screen.dart';
+import 'screens/forget_pass_screen.dart';
+import 'screens/model_library.dart';
+import 'screens/my_models.dart';
+import 'screens/register_screen.dart';
+import 'screens/result_hist_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'screens/landing_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/home.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 

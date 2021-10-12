@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/screens/edit_model.dart';
-import 'package:flutter_application/screens/output_screen.dart';
+import 'edit_model.dart';
+import 'output_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/model.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/models/dummy_result.dart';
-import 'package:flutter_application/screens/result_block.dart';
+import '/models/dummy_result.dart';
+import '/screens/result_block.dart';
 
 class ResultHistScreen extends StatelessWidget {
   const ResultHistScreen({Key? key}) : super(key: key);

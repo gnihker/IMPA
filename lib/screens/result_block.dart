@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_application/models/result.dart';
+import '/models/result.dart';
 
 class ResultBox extends StatelessWidget {
   const ResultBox({Key? key, required this.result}) : super(key: key);

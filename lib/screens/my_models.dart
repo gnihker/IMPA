@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/screens/model_detail.dart';
+import './model_detail.dart';
 
 import '../models/dummy_models.dart';
 
