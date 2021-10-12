@@ -1,7 +1,28 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class ForgetPassScreen extends StatelessWidget {
+class ForgetPassScreen extends StatefulWidget {
   const ForgetPassScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ForgetPassScreen> createState() => _ForgetPassScreenState();
+}
+
+class _ForgetPassScreenState extends State<ForgetPassScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  
+  void _resetPassword() async {
+    String email = emailController.text.toString();
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      Fluttertoast.showToast(msg: "The email has been sent!");
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,22 +60,26 @@ class ForgetPassScreen extends StatelessWidget {
                   //email input
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'EMAIL',
                         style: TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 6),
-                      TextField(
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          height: 0.7,
-                        ),
-                        autocorrect: false,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
+                      const SizedBox(height: 6),
+                      Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          controller: emailController,
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            height: 0.7,
+                          ),
+                          autocorrect: false,
+                          decoration: const InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                          ),
                         ),
                       ),
                     ],
@@ -65,12 +90,13 @@ class ForgetPassScreen extends StatelessWidget {
                     height: 40,
                     child: ElevatedButton(
                       onPressed: () {
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) =>
-                              _buildSendPopupDialog(context),
-                        );
+                        //showDialog(
+                        //  barrierDismissible: false,
+                        //  context: context,
+                        //  builder: (BuildContext context) =>
+                        //_buildSendPopupDialog(context),
+                        //);
+                        _resetPassword();
                       },
                       child: const Text(
                         'SEND EMAIL',
@@ -89,30 +115,30 @@ class ForgetPassScreen extends StatelessWidget {
   }
 }
 
-Widget _buildSendPopupDialog(BuildContext context) {
-  return AlertDialog(
-    title: const Text(
-      'Email sent!',
-      textAlign: TextAlign.center,
-    ),
-    actions: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text(
-              'Close',
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                    const Color.fromRGBO(255, 214, 0, 1))),
-          ),
-        ],
-      ),
-    ],
-  );
-}
+// Widget _buildSendPopupDialog(BuildContext context) {
+//   return AlertDialog(
+//     title: const Text(
+//       'Email sent!',
+//       textAlign: TextAlign.center,
+//     ),
+//     actions: <Widget>[
+//       Row(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           ElevatedButton(
+//             onPressed: () {
+//               Navigator.pop(context);
+//             },
+//             child: const Text(
+//               'Close',
+//               style: TextStyle(color: Colors.white),
+//             ),
+//             style: ButtonStyle(
+//                 backgroundColor: MaterialStateProperty.all(
+//                     const Color.fromRGBO(255, 214, 0, 1))),
+//           ),
+//         ],
+//       ),
+//     ],
+//   );
+//}

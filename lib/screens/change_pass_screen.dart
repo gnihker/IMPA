@@ -1,7 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ChangePassScreen extends StatelessWidget {
+class ChangePassScreen extends StatefulWidget {
   const ChangePassScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ChangePassScreen> createState() => _ChangePassScreenState();
+}
+
+class _ChangePassScreenState extends State<ChangePassScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +43,20 @@ class ChangePassScreen extends StatelessWidget {
                   //old password
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'OLD PASSWORD',
                         style: TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 6),
-                      TextField(
-                        style: TextStyle(
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: emailController,
+                        style: const TextStyle(
                           fontSize: 16.0,
                           height: 0.7,
                         ),
                         autocorrect: false,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
@@ -54,20 +68,21 @@ class ChangePassScreen extends StatelessWidget {
                   //new password1
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'NEW PASSWORD',
                         style: TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 6),
-                      TextField(
-                        style: TextStyle(
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: newPasswordController,
+                        style: const TextStyle(
                           fontSize: 16.0,
                           height: 0.7,
                         ),
                         autocorrect: false,
                         obscureText: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
                           hintText: 'must be 6-20 characters',
@@ -81,20 +96,21 @@ class ChangePassScreen extends StatelessWidget {
                   //confirm password input
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'CONFIRM PASSWORD',
                         style: TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 6),
-                      TextField(
-                        style: TextStyle(
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: confirmPasswordController,
+                        style: const TextStyle(
                           fontSize: 16.0,
                           height: 0.7,
                         ),
                         autocorrect: false,
                         obscureText: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
                           hintStyle: TextStyle(fontSize: 14),
