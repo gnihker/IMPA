@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class OutputScreen extends StatelessWidget {
-  const OutputScreen({Key? key, required this.image}) : super(key: key);
+  const OutputScreen({Key? key, required this.image, required this.ans})
+      : super(key: key);
 
   final XFile? image;
+  final String ans;
 
   @override
   Widget build(BuildContext context) {
@@ -122,10 +124,8 @@ class OutputScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              'corn',
-                            )
+                          children: [
+                            Text(ans),
                           ],
                         ),
                       ),

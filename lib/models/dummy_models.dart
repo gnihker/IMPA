@@ -14,4 +14,11 @@ const dummyModels = [
     route: 'https://test.com/proj/test/bottle',
     description: 'bottle test',
   ),
+  Model(
+    label: 'OCR',
+    method: 'POST',
+    route:
+        'https://api.ocr.space/parse/imageurl?apikey=3cc8d9406188957&base64Image=',
+    description: 'free ocr',
+  )
 ];

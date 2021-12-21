@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
         fontSize: 16.0,
         height: 0.7,
       ),
+      autofocus: false,
       autocorrect: false,
       textInputAction: TextInputAction.next,
       decoration: const InputDecoration(
@@ -100,11 +101,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   //crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 80),
                     Image(
-                      image: const AssetImage('lib/assets/images/logo.png'),
-                      width: MediaQuery.of(context).size.width / 1.5,
+                      image: const AssetImage('lib/assets/images/logo2.png'),
+                      width: MediaQuery.of(context).size.width / 1.3,
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 80),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -172,8 +174,8 @@ class _LoginScreenState extends State<LoginScreen> {
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
                 Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const HomeScreen())),
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const HomeScreen())),
               })
           .catchError((e) {
         Fluttertoast.showToast(msg: e!.message);

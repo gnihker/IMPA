@@ -1,9 +1,13 @@
-import 'package:flutter/material.dart';
-import 'edit_model.dart';
-import 'output_screen.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/material.dart';
+
+import 'edit_model.dart';
 
 import '../models/model.dart';
+import 'output_screen.dart';
 
 class ModelDetailScreen extends StatefulWidget {
   const ModelDetailScreen({Key? key, required this.thismod}) : super(key: key);
@@ -15,34 +19,55 @@ class ModelDetailScreen extends StatefulWidget {
 }
 
 class _ModelDetailScreenState extends State<ModelDetailScreen> {
-  final ImagePicker _picker = ImagePicker();
-  //XFile? image;
+  File? selectedImage;
+  String? msg;
+  XFile? pickedImage;
 
-  void _GalleryPicker() async {
-    final XFile? selectedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
-    //print(selectedImage!.path);
-    if (selectedImage != null) {
+  void uploadImage() async {
+    final request =
+        http.MultipartRequest("POST", Uri.parse("http://10.0.2.2:5000/submit"));
+
+    request.files.add(await http.MultipartFile.fromPath(
+        'img', selectedImage!.path,
+        filename: selectedImage!.path.split("/").last));
+
+    final response = await request.send();
+
+    http.Response res = await http.Response.fromStream(response);
+    var ans = json.decode(res.body);
+    print(ans);
+    setState(() {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => OutputScreen(image: selectedImage),
+          builder: (context) =>
+              OutputScreen(image: pickedImage, ans: ans.toString()),
         ),
       );
+    });
+  }
+
+  void galleryPicker() async {
+    final _pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      pickedImage = _pickedImage;
+      selectedImage = File(pickedImage!.path);
+    });
+    if (selectedImage != null) {
+      uploadImage();
     }
   }
 
-  void _CameraPicker() async {
-    final XFile? selectedImage =
-        await _picker.pickImage(source: ImageSource.camera);
-    //print(selectedImage!.path);
+  void cameraPicker() async {
+    final _pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    setState(() {
+      pickedImage = _pickedImage;
+      selectedImage = File(pickedImage!.path);
+    });
     if (selectedImage != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OutputScreen(image: selectedImage),
-        ),
-      );
+      uploadImage();
     }
   }
 
@@ -59,14 +84,14 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                       leading: const Icon(Icons.photo_library),
                       title: const Text('Photo Library'),
                       onTap: () {
-                        _GalleryPicker();
+                        galleryPicker();
                         Navigator.of(context).pop();
                       }),
                   ListTile(
                     leading: const Icon(Icons.photo_camera),
                     title: const Text('Camera'),
                     onTap: () {
-                      _CameraPicker();
+                      cameraPicker();
                       Navigator.of(context).pop();
                     },
                   ),
