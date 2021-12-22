@@ -12,6 +12,7 @@ class OutputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /* AppBar section */
       appBar: AppBar(
         leading: const BackButton(
           color: Colors.white,
@@ -26,12 +27,16 @@ class OutputScreen extends StatelessWidget {
         ),
         backgroundColor: const Color.fromRGBO(63, 24, 149, 1),
       ),
+      /* End of AppBar Section */
+      /* Body Section */
       body: SingleChildScrollView(
         child: Column(
           children: [
+            //Container of input
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
+                //light grey border
                 border: Border.all(
                   color: const Color.fromRGBO(196, 196, 196, 1),
                 ),
@@ -48,14 +53,17 @@ class OutputScreen extends StatelessWidget {
               margin: const EdgeInsets.only(top: 24, left: 24, right: 24),
               child: Column(
                 children: [
+                  //using container to make the 'input' box header
                   Container(
                     height: 32,
+                    //align the word 'input' using padding
                     padding: const EdgeInsets.symmetric(horizontal: 12),
+                    //width = parent container witdth
                     width: MediaQuery.of(context).size.width,
+                    //bg color
                     color: const Color.fromRGBO(63, 24, 149, 1),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: const [
                         Text(
                           'Input',
@@ -64,25 +72,20 @@ class OutputScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  //Expanded widget makes its child fills the available space along the flex widget's main axis which is Column in this case (Y axis)
                   Expanded(
                     child: Container(
-                      //height: MediaQuery.of(context).size.height / 2,
-                      margin: const EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Image.file(File(image!.path),
-                                height: MediaQuery.of(context).size.height / 2 -
-                                    76),
-                          ),
-                        ],
+                      padding: const EdgeInsets.all(15),
+                      height: 10,
+                      child: Image.file(
+                        File(image!.path),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+            //Container of the output
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -101,6 +104,7 @@ class OutputScreen extends StatelessWidget {
               margin: const EdgeInsets.all(24),
               child: Column(
                 children: [
+                  //header
                   Container(
                     height: 32,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -117,6 +121,7 @@ class OutputScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  //output zone
                   Expanded(
                     child: SingleChildScrollView(
                       child: Container(
@@ -125,7 +130,10 @@ class OutputScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(ans),
+                            Text(
+                              ans,
+                              style: const TextStyle(fontSize: 16),
+                            ),
                           ],
                         ),
                       ),
@@ -138,5 +146,6 @@ class OutputScreen extends StatelessWidget {
         ),
       ),
     );
+    /* End of Body Section */
   }
 }

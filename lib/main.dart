@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application/screens/output_screen.dart';
 import 'screens/add_new_model.dart';
 import 'screens/change_pass_screen.dart';
 import 'screens/forget_pass_screen.dart';

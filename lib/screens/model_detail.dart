@@ -23,19 +23,21 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
   String? msg;
   XFile? pickedImage;
 
-  void uploadImage() async {
+  void postuploadImage() async {
+    //post function, parsing image file
     final request =
-        http.MultipartRequest("POST", Uri.parse("http://10.0.2.2:5000/submit"));
+        http.MultipartRequest("POST", Uri.parse(widget.thismod.route));
 
+    //use model's key to add image file
     request.files.add(await http.MultipartFile.fromPath(
-        'img', selectedImage!.path,
+        widget.thismod.key, selectedImage!.path,
         filename: selectedImage!.path.split("/").last));
 
     final response = await request.send();
-
     http.Response res = await http.Response.fromStream(response);
     var ans = json.decode(res.body);
-    print(ans);
+    //print(ans);
+
     setState(() {
       Navigator.push(
         context,
@@ -55,7 +57,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
       selectedImage = File(pickedImage!.path);
     });
     if (selectedImage != null) {
-      uploadImage();
+      postuploadImage();
     }
   }
 
@@ -67,7 +69,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
       selectedImage = File(pickedImage!.path);
     });
     if (selectedImage != null) {
-      uploadImage();
+      postuploadImage();
     }
   }
 
@@ -77,26 +79,24 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
         context: context,
         builder: (BuildContext bc) {
           return SafeArea(
-            child: Container(
-              child: Wrap(
-                children: <Widget>[
-                  ListTile(
-                      leading: const Icon(Icons.photo_library),
-                      title: const Text('Photo Library'),
-                      onTap: () {
-                        galleryPicker();
-                        Navigator.of(context).pop();
-                      }),
-                  ListTile(
-                    leading: const Icon(Icons.photo_camera),
-                    title: const Text('Camera'),
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text('Photo Library'),
                     onTap: () {
-                      cameraPicker();
+                      galleryPicker();
                       Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
+                    }),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: const Text('Camera'),
+                  onTap: () {
+                    cameraPicker();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
           );
         });
@@ -112,6 +112,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
             color: Colors.white,
           ),
           backgroundColor: const Color.fromRGBO(63, 24, 149, 1),
+          //three-dot button in appBar
           actions: <Widget>[
             PopupMenuButton(
               icon: const Icon(
@@ -195,6 +196,11 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                     const SizedBox(height: 8),
                     Text(
                       'Endpoint Route: \n' + widget.thismod.route,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Key value: ' + widget.thismod.key,
                       style: const TextStyle(fontSize: 16),
                     ),
                   ],
