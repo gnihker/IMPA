@@ -188,12 +188,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           height: 40,
                           child: ElevatedButton(
                             onPressed: () {
-                              // showDialog(
-                              //   barrierDismissible: false,
-                              //   context: context,
-                              //   builder: (BuildContext context) =>
-                              //       _buildRegPopupDialog(context),
-                              // );
                               signUp(emailEditingController.text,
                                   passwordEditingController.text);
                             },
@@ -256,32 +250,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
         (route) => false);
   }
 }
-
-// Widget _buildRegPopupDialog(BuildContext context) {
-//   return AlertDialog(
-//     title: const Text(
-//       'Registered!',
-//       textAlign: TextAlign.center,
-//     ),
-//     actions: <Widget>[
-//       Row(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           ElevatedButton(
-//             onPressed: () {
-//               Navigator.popUntil(context, ModalRoute.withName('/login'));
-//             },
-//             child: const Text(
-//               'Close',
-//               style: TextStyle(color: Colors.white),
-//             ),
-//             style: ButtonStyle(
-//                 backgroundColor: MaterialStateProperty.all(
-//                     const Color.fromRGBO(255, 214, 0, 1))),
-//           ),
-//         ],
-//       ),
-//     ],
-//   );
-// }
-
