@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AddNewModelScreen extends StatefulWidget {
   const AddNewModelScreen({Key? key}) : super(key: key);
@@ -8,9 +12,30 @@ class AddNewModelScreen extends StatefulWidget {
 }
 
 class _AddNewModelScreenState extends State<AddNewModelScreen> {
+  var currentUser = FirebaseAuth.instance.currentUser;
+  final firestoreInstance = FirebaseFirestore.instance;
+
   final _label = TextEditingController();
   final _detailRoute = TextEditingController();
   final _modelKey = GlobalKey<FormState>();
+
+  Future<void> _addModelToFirebase() async {
+    var _url = _detailRoute.text;
+    var _parseURL = Uri.parse(_detailRoute.text);
+    final response = await http.get(_parseURL);
+    var _detailResponse = json.decode(response.body);
+    //print(_detailResponse);
+    //print(_label.text);
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("models")
+        .add({
+      'label': _label.text,
+      'detail': _detailResponse,
+      'detailRoute': _url,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +150,7 @@ class _AddNewModelScreenState extends State<AddNewModelScreen> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   if (_modelKey.currentState!.validate()) {
+                                    _addModelToFirebase();
                                     showDialog(
                                       barrierDismissible: false,
                                       context: context,

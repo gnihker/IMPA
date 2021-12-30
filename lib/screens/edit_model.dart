@@ -1,21 +1,111 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '/models/model.dart';
 
 class EditModelScreen extends StatefulWidget {
   const EditModelScreen({Key? key, required this.thismod}) : super(key: key);
 
-  final Model thismod;
+  final QueryDocumentSnapshot<Object?> thismod;
 
   @override
   State<EditModelScreen> createState() => _EditModelScreenState();
 }
 
 class _EditModelScreenState extends State<EditModelScreen> {
-  String _dropdownValue = 'GET';
+  var currentUser = FirebaseAuth.instance.currentUser;
+  final firestoreInstance = FirebaseFirestore.instance;
+
+  late final _label = TextEditingController(text: widget.thismod['label']);
+  late final _detailRoute =
+      TextEditingController(text: widget.thismod['detailRoute']);
+  final _modelKey = GlobalKey<FormState>();
+
+  Future<void> _updateModelToFirebase() async {
+    var _url = _detailRoute.text;
+    var _parseURL = Uri.parse(_detailRoute.text);
+    final response = await http.get(_parseURL);
+    var _detailResponse = json.decode(response.body);
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("models")
+        .where("label", isEqualTo: widget.thismod['label'])
+        .where("detailRoute", isEqualTo: widget.thismod['detailRoute'])
+        .get()
+        .then((res) {
+      res.docs.forEach((result) {
+        firestoreInstance
+            .collection("users")
+            .doc(currentUser?.uid)
+            .collection("models")
+            .doc(result.id)
+            .update({
+          "label": _label.text,
+          "detailRoute": _url,
+          "detail": _detailResponse
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final _labelField = TextFormField(
+      controller: _label,
+      maxLength: 32,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return ("This field cannot be empty");
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _label.text = value!;
+      },
+      textInputAction: TextInputAction.next,
+      style: const TextStyle(
+        fontSize: 14.0,
+        height: 1,
+      ),
+      autocorrect: false,
+      decoration: const InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(),
+        hintText: 'max 32 characters',
+        counterText: "",
+      ),
+    );
+
+    final _detailRouteField = TextFormField(
+      controller: _detailRoute,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return ("This field cannot be empty");
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _detailRoute.text = value!;
+      },
+      textInputAction: TextInputAction.next,
+      style: const TextStyle(
+        fontSize: 14.0,
+        height: 1,
+      ),
+      autocorrect: false,
+      decoration: const InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(),
+        hintText: 'example; http://test.io/api/detail',
+      ),
+    );
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -32,120 +122,122 @@ class _EditModelScreenState extends State<EditModelScreen> {
         body: SingleChildScrollView(
           child: Center(
             child: Container(
-              padding: const EdgeInsets.only(top: 40),
+              padding: const EdgeInsets.only(top: 30),
               width: MediaQuery.of(context).size.width / 1.35,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //model label
-                  TextFormField(
-                    maxLength: 32,
-                    initialValue: widget.thismod.label,
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      height: 1,
-                    ),
-                    decoration: const InputDecoration(
-                      labelText: 'Model label',
-                      counterText: "",
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'max 32 characters',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    child: InputDecorator(
-                      decoration:
-                          const InputDecoration(border: OutlineInputBorder()),
-                      child: DropdownButton(
-                        value: _dropdownValue,
-                        isExpanded: true,
-                        icon: const Icon(Icons.arrow_downward),
-                        iconSize: 20,
-                        isDense: true,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _dropdownValue = newValue!;
-                          });
-                        },
-                        items: <String>['GET', 'POST', 'PATCH']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: const TextStyle(
-                                fontSize: 16,
+                  Form(
+                    key: _modelKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Model label',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(height: 2),
+                            _labelField,
+                            const SizedBox(height: 16)
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Detail Endpoint Route',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(height: 2),
+                            _detailRouteField,
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        // save button
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 4,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_modelKey.currentState!.validate()) {
+                                    _updateModelToFirebase();
+                                    showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          _buildSavePopupDialog(context),
+                                    );
+                                  }
+                                },
+                                child: const Text(
+                                  'SAVE',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        const Color.fromRGBO(255, 214, 0, 1))),
                               ),
                             ),
-                          );
-                        }).toList(),
-                      ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  //example section
+                  const SizedBox(height: 16),
+                  const SizedBox(
+                    child: Text('What\'is the Detail Endpoint Route?',
+                        style: TextStyle(fontSize: 16)),
+                  ),
+                  const SizedBox(height: 2),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    color: Colors.grey[350],
+                    child: const Text(
+                        'It\'s the endpoint route that will help our application to understand your image processing model by using GET method and it needs to return the exact form of json',
+                        style: TextStyle(fontSize: 14)),
+                  ),
+                  const SizedBox(height: 16),
+                  const SizedBox(
+                      child: Text(
+                    'The Detail Endpoint Route needs to return these details',
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  )),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    color: Colors.grey[350],
+                    child: const Text(
+                        "method = POST\n(our application only support models using POST method)\nroute = model image submission route\nkey = key using in the request body\nimgType = file or base64\ndescription = model description"),
+                  ),
+                  const SizedBox(height: 16),
+                  const SizedBox(
+                    child: Text(
+                      "- Example -",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.35,
+                    padding: const EdgeInsets.all(12),
+                    child: const Text(
+                      "{ method: 'POST',\nroute: 'http://test.io/api/submit',\nkey: 'img',\nimgType: file\ndescription: 'this is a test model'}",
+                    ),
+                    color: Colors.grey[350],
+                  ),
+                  const SizedBox(
+                    child: Text(
+                      '**must returns in this exact json format**',
+                      style: TextStyle(color: Colors.red, fontSize: 14),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  SizedBox(
-                    child: TextFormField(
-                      initialValue: widget.thismod.route,
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                        height: 1,
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: 'Endpoint route',
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'example; https://test.io/api/10',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width / 15,
-                  ),
-                  //model description
-                  TextFormField(
-                    initialValue: widget.thismod.description,
-                    maxLength: 256,
-                    maxLines: 15,
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      height: 1,
-                    ),
-                    decoration: const InputDecoration(
-                      hintText: 'Model Description',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  // save button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 4,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  _buildSavePopupDialog(context),
-                            );
-                          },
-                          child: const Text(
-                            'SAVE',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color.fromRGBO(255, 214, 0, 1))),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

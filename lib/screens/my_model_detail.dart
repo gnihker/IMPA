@@ -1,36 +1,40 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
 import 'edit_model.dart';
-
-import '../models/model.dart';
 import 'output_screen.dart';
 
 class ModelDetailScreen extends StatefulWidget {
   const ModelDetailScreen({Key? key, required this.thismod}) : super(key: key);
 
-  final Model thismod;
+  final QueryDocumentSnapshot<Object?> thismod;
 
   @override
   State<ModelDetailScreen> createState() => _ModelDetailScreenState();
 }
 
 class _ModelDetailScreenState extends State<ModelDetailScreen> {
+  var currentUser = FirebaseAuth.instance.currentUser;
+  final firestoreInstance = FirebaseFirestore.instance;
+
   File? selectedImage;
   String? msg;
   XFile? pickedImage;
 
+  //POST function, sending img file to model route with input key
   void postuploadImage() async {
     //post function, parsing image file
-    final request =
-        http.MultipartRequest("POST", Uri.parse(widget.thismod.route));
+    final request = http.MultipartRequest(
+        "POST", Uri.parse(widget.thismod['detail']['route']));
 
     //use model's key to add image file
     request.files.add(await http.MultipartFile.fromPath(
-        widget.thismod.key, selectedImage!.path,
+        widget.thismod['detail']['key'], selectedImage!.path,
         filename: selectedImage!.path.split("/").last));
 
     final response = await request.send();
@@ -49,6 +53,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
     });
   }
 
+  //open gallery
   void galleryPicker() async {
     final _pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -61,6 +66,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
     }
   }
 
+  //open camera
   void cameraPicker() async {
     final _pickedImage =
         await ImagePicker().pickImage(source: ImageSource.camera);
@@ -100,6 +106,73 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
             ),
           );
         });
+  }
+
+  Future<void> _delete() async {
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("models")
+        .where("label", isEqualTo: widget.thismod['label'])
+        .where("detailRoute", isEqualTo: widget.thismod['detailRoute'])
+        .get()
+        .then((res) {
+      res.docs.forEach((result) {
+        firestoreInstance
+            .collection("users")
+            .doc(currentUser?.uid)
+            .collection("models")
+            .doc(result.id)
+            .delete();
+      });
+    });
+  }
+
+  Future<dynamic> _deleteModal(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(children: const [
+            Text('Delete this model?'),
+          ], mainAxisAlignment: MainAxisAlignment.center),
+          actionsPadding: const EdgeInsets.only(bottom: 10),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    _delete();
+                    Navigator.of(context)
+                        .popUntil(ModalRoute.withName('/mymodels'));
+                  },
+                  child: const Text(
+                    'YES',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          const Color.fromRGBO(255, 214, 0, 1))),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'NO',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          const Color.fromRGBO(196, 196, 196, 1))),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   //main widget
@@ -147,12 +220,13 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                     ),
                   );
                 } else if (result == 1) {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) =>
-                        _buildDeletePopupDialog(context),
-                  );
+                  _deleteModal(context);
+                  // showDialog(
+                  //   barrierDismissible: false,
+                  //   context: context,
+                  //   builder: (BuildContext context) =>
+                  //       _deleteModal(context),
+                  // );
                 }
               },
             )
@@ -168,7 +242,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.thismod.label,
+                      widget.thismod['label'],
                       style: const TextStyle(fontSize: 20, letterSpacing: 0.5),
                     ),
                     const SizedBox(height: 15),
@@ -182,7 +256,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            widget.thismod.description!,
+                            widget.thismod['detail']['description'],
                             style: const TextStyle(fontSize: 16),
                           ),
                         ),
@@ -190,17 +264,17 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      'Endpoint Method: ' + widget.thismod.method,
+                      'Endpoint Method: ' + widget.thismod['detail']['method'],
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Endpoint Route: \n' + widget.thismod.route,
+                      'Endpoint Route: \n' + widget.thismod['detail']['route'],
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Key value: ' + widget.thismod.key,
+                      'Key value: ' + widget.thismod['detail']['method'],
                       style: const TextStyle(fontSize: 16),
                     ),
                   ],
@@ -226,6 +300,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
   }
 }
 
+//appbar 3dots panel
 Widget _buildDeletePopupDialog(BuildContext context) {
   return AlertDialog(
     title: Row(children: const [
