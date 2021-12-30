@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/dummy_models.dart';
-import 'model_detail.dart';
+import 'my_model_detail.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -148,13 +147,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ModelDetailScreen(thismod: dummyModels[0]),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) =>
+                    //         ModelDetailScreen(thismod: dummyModels[0]),
+                    //   ),
+                    // );
+                    Navigator.pushNamed(context, '/test');
                   },
                   child: const Text(
                     'Leaf classification',
