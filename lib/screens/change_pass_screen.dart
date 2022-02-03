@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'home.dart';
 
 class ChangePassScreen extends StatefulWidget {
   const ChangePassScreen({Key? key}) : super(key: key);
@@ -10,14 +13,101 @@ class ChangePassScreen extends StatefulWidget {
 
 class _ChangePassScreenState extends State<ChangePassScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController oldPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  void _changePassword(String password) async {
+    //ตอนนี้ฟังก์ชันนี้ยังไม่ได้เช็คว่า current password ที่ใส่ไปถูกมั้ย
+    var currentUser = FirebaseAuth.instance.currentUser;
+
+    if (_formKey.currentState!.validate()) {
+      await currentUser?.updatePassword(password).then((_) {
+        Fluttertoast.showToast(msg: "Password changed successfully!");
+        Navigator.pushAndRemoveUntil(
+            (context),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (route) => false);
+      }).catchError((e) {
+        Fluttertoast.showToast(msg: e!.message);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final oldPasswordField = TextFormField(
+      controller: oldPasswordController,
+      style: const TextStyle(
+        fontSize: 16.0,
+        height: 0.7,
+      ),
+      autocorrect: false,
+      decoration: const InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(),
+      ),
+    );
+
+    final newPasswordField = TextFormField(
+      controller: newPasswordController,
+      validator: (value) {
+        RegExp regex = RegExp(r'^.{6,}$');
+        if (value!.isEmpty) {
+          return ("New password is required");
+        }
+        if (!regex.hasMatch(value)) {
+          return ("Enter Valid Password(Min. 6 Character)");
+        }
+      },
+      onSaved: (value) {
+        newPasswordController.text = value!;
+      },
+      textInputAction: TextInputAction.next,
+      style: const TextStyle(
+        fontSize: 16.0,
+        height: 0.7,
+      ),
+      autocorrect: false,
+      obscureText: true,
+      decoration: const InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintText: 'must be 6-20 characters',
+        hintStyle: TextStyle(fontSize: 14),
+        border: OutlineInputBorder(),
+      ),
+    );
+
+    final confirmpasswordField = TextFormField(
+      controller: confirmPasswordController,
+      validator: (value) {
+        if (confirmPasswordController.text != newPasswordController.text) {
+          return "Password don't match";
+        }
+        return null;
+      },
+      onSaved: (value) {
+        confirmPasswordController.text = value!;
+      },
+      textInputAction: TextInputAction.done,
+      style: const TextStyle(
+        fontSize: 16.0,
+        height: 0.7,
+      ),
+      autocorrect: false,
+      obscureText: true,
+      decoration: const InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintStyle: TextStyle(fontSize: 14),
+        border: OutlineInputBorder(),
+      ),
+    );
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -37,110 +127,73 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
           child: Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width / 1.35,
-              child: Column(
-                children: [
-                  const SizedBox(height: 30),
-                  //old password
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'OLD PASSWORD',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        controller: emailController,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          height: 0.7,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    //old password
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'OLD PASSWORD',
+                          style: TextStyle(fontSize: 16),
                         ),
-                        autocorrect: false,
-                        decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  //new password1
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'NEW PASSWORD',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        controller: newPasswordController,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          height: 0.7,
-                        ),
-                        autocorrect: false,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'must be 6-20 characters',
-                          hintStyle: TextStyle(fontSize: 14),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  //confirm password input
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'CONFIRM PASSWORD',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        controller: confirmPasswordController,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          height: 0.7,
-                        ),
-                        autocorrect: false,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintStyle: TextStyle(fontSize: 14),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 36),
-                  SizedBox(
-                    height: 40,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) =>
-                              _buildChangePopupDialog(context),
-                        );
-                      },
-                      child: const Text(
-                        'Change password',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromRGBO(255, 214, 0, 1))),
+                        const SizedBox(height: 6),
+                        oldPasswordField,
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    //new password1
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'NEW PASSWORD',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 6),
+                        newPasswordField,
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    //confirm password input
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'CONFIRM PASSWORD',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 6),
+                        confirmpasswordField,
+                      ],
+                    ),
+                    const SizedBox(height: 36),
+                    SizedBox(
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _changePassword(newPasswordController.text);
+                          //showDialog(
+                          //  barrierDismissible: false,
+                          //  context: context,
+                          //  builder: (BuildContext context) =>
+                          //      _buildChangePopupDialog(context),
+                          //);
+                        },
+                        child: const Text(
+                          'Change password',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromRGBO(255, 214, 0, 1))),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
