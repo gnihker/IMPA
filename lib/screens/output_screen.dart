@@ -7,7 +7,7 @@ class OutputScreen extends StatelessWidget {
       : super(key: key);
 
   final XFile? image;
-  final String ans;
+  final dynamic ans;
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +130,11 @@ class OutputScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              ans,
-                              style: const TextStyle(fontSize: 16),
+                            Flexible(
+                              child: Text(
+                                ans.toString(),
+                                style: const TextStyle(fontSize: 16),
+                              ),
                             ),
                           ],
                         ),

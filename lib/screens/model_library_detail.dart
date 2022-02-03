@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/screens/output_screen.dart';
 import 'package:http/http.dart' as http;
@@ -19,13 +20,14 @@ class ModelLibraryDetailScreen extends StatefulWidget {
 }
 
 class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
+  var currentUser = FirebaseAuth.instance.currentUser;
   final firestoreInstance = FirebaseFirestore.instance;
 
   File? selectedImage;
   String? msg;
   XFile? pickedImage;
 
-  void postuploadImage() async {
+  void postUploadImage() async {
     //post function, parsing image file
     final request = http.MultipartRequest(
         "POST", Uri.parse(widget.thismod['detail']['route']));
@@ -38,7 +40,20 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
     final response = await request.send();
     http.Response res = await http.Response.fromStream(response);
     var ans = json.decode(res.body);
-    //print(ans);
+
+    /* SAVE THE RESULT TO FIREBASE*/
+    List<int> _imageBytes = await selectedImage!.readAsBytes();
+    String _base64Image = base64Encode(_imageBytes);
+    var _label = widget.thismod['label'];
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("history")
+        .add({
+      'label': _label,
+      'imgBase64': _base64Image,
+      'result': ans,
+    });
 
     setState(() {
       Navigator.push(
@@ -51,6 +66,78 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
     });
   }
 
+  void postPretrainedOCR() async {
+    List<int> imageBytes = await selectedImage!.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    http.Response res = await http.post(
+      Uri.parse(widget.thismod['detail']['route']),
+      headers: <String, String>{
+        HttpHeaders.authorizationHeader:
+            'Bearer 0af35a3ce5c23f04074be749714ef2f3',
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode(<String, Map<String, String>>{
+        'image': {'content': base64Image},
+      }),
+    );
+    var ans = json.decode(res.body);
+
+    /* SAVE THE RESULT TO FIREBASE*/
+    List<int> _imageBytes = await selectedImage!.readAsBytes();
+    String _base64Image = base64Encode(_imageBytes);
+    var _label = widget.thismod['label'];
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("history")
+        .add({
+      'label': _label,
+      'imgBase64': _base64Image,
+      'result': ans,
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OutputScreen(image: pickedImage, ans: ans),
+      ),
+    );
+    //});
+  }
+
+  void postBase64() async {
+    List<int> imageBytes = await selectedImage!.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    http.Response res = await http.post(
+      Uri.parse(widget.thismod['detail']['route']),
+      body: jsonEncode(<String, Map<String, String>>{
+        widget.thismod['key']: {'content': base64Image},
+      }),
+    );
+    var ans = json.decode(res.body);
+
+    /* SAVE THE RESULT TO FIREBASE*/
+    List<int> _imageBytes = await selectedImage!.readAsBytes();
+    String _base64Image = base64Encode(_imageBytes);
+    var _label = widget.thismod['label'];
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("history")
+        .add({
+      'label': _label,
+      'imgBase64': _base64Image,
+      'result': ans,
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OutputScreen(image: pickedImage, ans: ans),
+      ),
+    );
+  }
+
   //open gallery
   void galleryPicker() async {
     final _pickedImage =
@@ -60,7 +147,15 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
       selectedImage = File(pickedImage!.path);
     });
     if (selectedImage != null) {
-      postuploadImage();
+      if (widget.thismod['label'] == "OCRpretrained") {
+        postPretrainedOCR();
+      } else {
+        if (widget.thismod['detail']['imgType'] == 'file') {
+          postUploadImage();
+        } else if (widget.thismod['detail']['imgType'] == 'base64') {
+          postBase64();
+        }
+      }
     }
   }
 
@@ -73,7 +168,15 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
       selectedImage = File(pickedImage!.path);
     });
     if (selectedImage != null) {
-      postuploadImage();
+      if (widget.thismod['label'] == "OCRpretrained") {
+        postPretrainedOCR();
+      } else {
+        if (widget.thismod['detail']['imgType'] == 'file') {
+          postUploadImage();
+        } else if (widget.thismod['detail']['imgType'] == 'base64') {
+          postBase64();
+        }
+      }
     }
   }
 

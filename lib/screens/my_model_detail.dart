@@ -27,12 +27,11 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
   XFile? pickedImage;
 
   //POST function, sending img file to model route with input key
-  void postuploadImage() async {
-    //post function, parsing image file
+  void postUploadImage() async {
+    /* POST PACKAGE */
     final request = http.MultipartRequest(
         "POST", Uri.parse(widget.thismod['detail']['route']));
 
-    //use model's key to add image file
     request.files.add(await http.MultipartFile.fromPath(
         widget.thismod['detail']['key'], selectedImage!.path,
         filename: selectedImage!.path.split("/").last));
@@ -40,7 +39,20 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
     final response = await request.send();
     http.Response res = await http.Response.fromStream(response);
     var ans = json.decode(res.body);
-    //print(ans);
+
+    /* SAVE THE RESULT TO FIREBASE*/
+    List<int> _imageBytes = await selectedImage!.readAsBytes();
+    String _base64Image = base64Encode(_imageBytes);
+    var _label = widget.thismod['label'];
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("history")
+        .add({
+      'label': _label,
+      'imgBase64': _base64Image,
+      'result': ans,
+    });
 
     setState(() {
       Navigator.push(
@@ -53,6 +65,39 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
     });
   }
 
+  void postBase64() async {
+    List<int> imageBytes = await selectedImage!.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    http.Response res = await http.post(
+      Uri.parse(widget.thismod['detail']['route']),
+      body: jsonEncode(<String, Map<String, String>>{
+        widget.thismod['key']: {'content': base64Image},
+      }),
+    );
+    var ans = json.decode(res.body);
+
+    /* SAVE THE RESULT TO FIREBASE*/
+    List<int> _imageBytes = await selectedImage!.readAsBytes();
+    String _base64Image = base64Encode(_imageBytes);
+    var _label = widget.thismod['label'];
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("history")
+        .add({
+      'label': _label,
+      'imgBase64': _base64Image,
+      'result': ans,
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OutputScreen(image: pickedImage, ans: ans),
+      ),
+    );
+  }
+
   //open gallery
   void galleryPicker() async {
     final _pickedImage =
@@ -62,7 +107,11 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
       selectedImage = File(pickedImage!.path);
     });
     if (selectedImage != null) {
-      postuploadImage();
+      if (widget.thismod['detail']['imgType'] == 'file') {
+        postUploadImage();
+      } else if (widget.thismod['detail']['imgType'] == 'base64') {
+        postBase64();
+      }
     }
   }
 
@@ -75,7 +124,11 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
       selectedImage = File(pickedImage!.path);
     });
     if (selectedImage != null) {
-      postuploadImage();
+      if (widget.thismod['detail']['imgType'] == 'file') {
+        postUploadImage();
+      } else if (widget.thismod['detail']['imgType'] == 'base64') {
+        postBase64();
+      }
     }
   }
 
@@ -221,12 +274,6 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                   );
                 } else if (result == 1) {
                   _deleteModal(context);
-                  // showDialog(
-                  //   barrierDismissible: false,
-                  //   context: context,
-                  //   builder: (BuildContext context) =>
-                  //       _deleteModal(context),
-                  // );
                 }
               },
             )
@@ -270,6 +317,11 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                     const SizedBox(height: 8),
                     Text(
                       'Endpoint Route: \n' + widget.thismod['detail']['route'],
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'File type: ' + widget.thismod['detail']['imgType'],
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 8),

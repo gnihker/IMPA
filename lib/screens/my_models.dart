@@ -26,29 +26,6 @@ class _MyModelsScreenState extends State<MyModelsScreen> {
           ),
           backgroundColor: const Color.fromRGBO(63, 24, 149, 1),
         ),
-        // body: ListView.separated(
-        //   separatorBuilder: (context, index) => const Divider(
-        //     color: Colors.black,
-        //   ),
-        //   itemCount: dummyModels.length,
-        //   itemBuilder: (context, index) {
-        //     return ListTile(
-        //       title: Text(
-        //         dummyModels[index].label,
-        //         style: const TextStyle(fontSize: 16, letterSpacing: 0.5),
-        //       ),
-        //       onTap: () {
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(
-        //             builder: (context) =>
-        //                 ModelDetailScreen(thismod: dummyModels[index]),
-        //           ),
-        //         );
-        //       },
-        //     );
-        //   },
-        // ),
         body: _buildModelList(context),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -99,27 +76,6 @@ Widget _buildModelList(BuildContext context) {
                     ),
                   );
                 },
-                //     color: Colors.black,
-                //   ),)
-                // children: snapshot.data!.docs.map((doc) {
-                //   return Center(
-                //       child: TextButton(
-                //     child: Text(
-                //       doc['label'],
-                //       style: TextStyle(fontSize: 16),
-                //     ),
-                //     onPressed: () {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //           builder: (context) => ModelDetailScreen(
-                //             thismod: doc,
-                //           ),
-                //         ),
-                //       );
-                //     },
-                //   ));
-                // }).toList(),
               );
             },
           );

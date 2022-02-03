@@ -7,6 +7,8 @@ class AddNewModel2Screen extends StatefulWidget {
   State<AddNewModel2Screen> createState() => _AddNewModel2ScreenState();
 }
 
+
+//อันเดิมที่ไม่ใช้แล้ว
 class _AddNewModel2ScreenState extends State<AddNewModel2Screen> {
   String dropdownValue = 'GET';
 
