@@ -163,20 +163,13 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
 
   Future<void> _delete() async {
     firestoreInstance
-        .collection("users")
-        .doc(currentUser?.uid)
-        .collection("models")
+        .collection("model_lib")
         .where("label", isEqualTo: widget.thismod['label'])
         .where("detailRoute", isEqualTo: widget.thismod['detailRoute'])
         .get()
         .then((res) {
       res.docs.forEach((result) {
-        firestoreInstance
-            .collection("users")
-            .doc(currentUser?.uid)
-            .collection("models")
-            .doc(result.id)
-            .delete();
+        firestoreInstance.collection("model_lib").doc(result.id).delete();
       });
     });
   }

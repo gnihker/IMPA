@@ -24,16 +24,12 @@ class _AddNewModelScreenState extends State<AddNewModelScreen> {
     var _parseURL = Uri.parse(_detailRoute.text);
     final response = await http.get(_parseURL);
     var _detailResponse = json.decode(response.body);
-    //print(_detailResponse);
-    //print(_label.text);
-    firestoreInstance
-        .collection("users")
-        .doc(currentUser?.uid)
-        .collection("models")
-        .add({
+
+    firestoreInstance.collection("model_lib").add({
       'label': _label.text,
       'detail': _detailResponse,
       'detailRoute': _url,
+      'owner': currentUser?.uid,
     });
   }
 

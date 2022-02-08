@@ -37,7 +37,10 @@ Widget _buildModelList(BuildContext context) {
 
   return Container(
     child: StreamBuilder(
-        stream: firestoreInstance.collection("model_lib").snapshots(),
+        stream: firestoreInstance
+            .collection("model_lib")
+            .where('owner', isEqualTo: 'impa')
+            .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return const Center(
