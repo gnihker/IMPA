@@ -20,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   var _recentlyUsedLabel;
   bool _isLoading = true;
   var _tmp;
-  var _recentlyUsed;
 
   @override
   void initState() {
@@ -52,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       _isLoading = false;
+      _recentlyUsedId;
+      _recentlyUsedLabel;
     });
   }
 
@@ -144,7 +145,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 45,
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/mymodels');
+                              _isLoading = true;
+                              Navigator.pushNamed(context, '/mymodels')
+                                  .then((value) => _getRecentlyUsed());
                             },
                             child: const Text(
                               'MY MODELS',
@@ -168,7 +171,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 45,
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/modellib');
+                              _isLoading = true;
+                              Navigator.pushNamed(context, '/modellib')
+                                  .then((value) => _getRecentlyUsed());
                             },
                             child: const Text(
                               'MODEL LIBRARY',
@@ -227,6 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             fontSize: 16, letterSpacing: 0.5),
                                       ),
                                       onPressed: () {
+                                        _isLoading = true;
                                         if (snapshot.data!.docs[index]
                                                 ['owner'] ==
                                             'impa') {
@@ -241,8 +247,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     .docs[index].reference.id,
                                               ),
                                             ),
-                                          );
+                                          ).then((value) => _getRecentlyUsed());
                                         } else {
+                                          _isLoading = true;
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -254,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     .docs[index].reference.id,
                                               ),
                                             ),
-                                          );
+                                          ).then((value) => _getRecentlyUsed());
                                         }
                                       },
                                     );
