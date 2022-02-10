@@ -178,8 +178,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
   Future<void> _delete() async {
     firestoreInstance
         .collection("model_lib")
-        .where("label", isEqualTo: widget.thismod['label'])
-        .where("detailRoute", isEqualTo: widget.thismod['detailRoute'])
+        .where(FieldPath.documentId, isEqualTo: widget.modId)
         .get()
         .then((res) {
       res.docs.forEach((result) {
@@ -275,8 +274,8 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          EditModelScreen(thismod: widget.thismod),
+                      builder: (context) => EditModelScreen(
+                          thismod: widget.thismod, modId: widget.modId),
                     ),
                   );
                 } else if (result == 1) {

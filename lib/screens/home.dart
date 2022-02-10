@@ -196,7 +196,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: StreamBuilder(
                               stream: firestoreInstance
                                   .collection("model_lib")
-                                  .where('label', isEqualTo: _recentlyUsedLabel)
+                                  .where(FieldPath.documentId,
+                                      isEqualTo: _recentlyUsedId)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {

@@ -5,9 +5,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class EditModelScreen extends StatefulWidget {
-  const EditModelScreen({Key? key, required this.thismod}) : super(key: key);
+  const EditModelScreen({Key? key, required this.thismod, required this.modId})
+      : super(key: key);
 
   final QueryDocumentSnapshot<Object?> thismod;
+  final String modId;
 
   @override
   State<EditModelScreen> createState() => _EditModelScreenState();
@@ -28,20 +30,12 @@ class _EditModelScreenState extends State<EditModelScreen> {
     final response = await http.get(_parseURL);
     var _detailResponse = json.decode(response.body);
     firestoreInstance
-        .collection("users")
-        .doc(currentUser?.uid)
-        .collection("models")
-        .where("label", isEqualTo: widget.thismod['label'])
-        .where("detailRoute", isEqualTo: widget.thismod['detailRoute'])
+        .collection("model_lib")
+        .where(FieldPath.documentId, isEqualTo: widget.modId)
         .get()
         .then((res) {
       res.docs.forEach((result) {
-        firestoreInstance
-            .collection("users")
-            .doc(currentUser?.uid)
-            .collection("models")
-            .doc(result.id)
-            .update({
+        firestoreInstance.collection("model_lib").doc(result.id).update({
           "label": _label.text,
           "detailRoute": _url,
           "detail": _detailResponse
