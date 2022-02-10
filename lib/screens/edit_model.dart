@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '/models/model.dart';
-
 class EditModelScreen extends StatefulWidget {
   const EditModelScreen({Key? key, required this.thismod}) : super(key: key);
 

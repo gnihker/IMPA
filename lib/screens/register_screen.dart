@@ -20,9 +20,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // editing Controller
-  final emailEditingController =  TextEditingController();
-  final passwordEditingController =  TextEditingController();
-  final confirmPasswordEditingController =  TextEditingController();
+  final emailEditingController = TextEditingController();
+  final passwordEditingController = TextEditingController();
+  final confirmPasswordEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -237,6 +237,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // writing all the values
     userModel.email = user!.email;
     userModel.uid = user.uid;
+    userModel.recentlyUsedId = '0';
+    userModel.recentlyUsedLabel = 'None';
 
     await firebaseFirestore
         .collection("users")

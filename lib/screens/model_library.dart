@@ -44,7 +44,7 @@ Widget _buildModelList(BuildContext context) {
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return const Center(
-              child: CircularProgressIndicator(),
+               child: CircularProgressIndicator(),
             );
           }
           return ListView.separated(
@@ -63,7 +63,7 @@ Widget _buildModelList(BuildContext context) {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ModelLibraryDetailScreen(
-                          thismod: snapshot.data!.docs[index]),
+                          thismod: snapshot.data!.docs[index], modId: snapshot.data!.docs[index].reference.id),
                     ),
                   );
                 },

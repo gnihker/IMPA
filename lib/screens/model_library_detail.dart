@@ -9,10 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class ModelLibraryDetailScreen extends StatefulWidget {
-  const ModelLibraryDetailScreen({Key? key, required this.thismod})
+  const ModelLibraryDetailScreen(
+      {Key? key, required this.thismod, required this.modId})
       : super(key: key);
 
   final QueryDocumentSnapshot<Object?> thismod;
+  final String modId;
 
   @override
   _ModelLibraryDetailScreenState createState() =>
@@ -54,7 +56,7 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
       'imgBase64': _base64Image,
       'result': ans,
     });
-
+    _addRecentlyUse();
     setState(() {
       Navigator.push(
         context,
@@ -95,7 +97,7 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
       'imgBase64': _base64Image,
       'result': ans,
     });
-
+    _addRecentlyUse();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -129,13 +131,24 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
       'imgBase64': _base64Image,
       'result': ans,
     });
-
+    _addRecentlyUse();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => OutputScreen(image: pickedImage, ans: ans),
       ),
     );
+  }
+
+  Future<void> _addRecentlyUse() async {
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .update({'recentlyUsedId': widget.modId});
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .update({'recentlyUsedLabel': widget.thismod['label']});
   }
 
   //open gallery

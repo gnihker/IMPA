@@ -10,9 +10,12 @@ import 'edit_model.dart';
 import 'output_screen.dart';
 
 class ModelDetailScreen extends StatefulWidget {
-  const ModelDetailScreen({Key? key, required this.thismod}) : super(key: key);
+  const ModelDetailScreen(
+      {Key? key, required this.thismod, required this.modId})
+      : super(key: key);
 
   final QueryDocumentSnapshot<Object?> thismod;
+  final String modId;
 
   @override
   State<ModelDetailScreen> createState() => _ModelDetailScreenState();
@@ -53,7 +56,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
       'imgBase64': _base64Image,
       'result': ans,
     });
-
+    _addRecentlyUse();
     setState(() {
       Navigator.push(
         context,
@@ -89,7 +92,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
       'imgBase64': _base64Image,
       'result': ans,
     });
-
+    _addRecentlyUse();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -159,6 +162,17 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
             ),
           );
         });
+  }
+
+  Future<void> _addRecentlyUse() async {
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .update({'recentlyUsed': widget.modId});
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .update({'recentlyUsedLabel': widget.thismod['label']});
   }
 
   Future<void> _delete() async {

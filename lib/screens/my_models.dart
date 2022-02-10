@@ -68,8 +68,8 @@ Widget _buildModelList(BuildContext context) {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ModelDetailScreen(
-                          thismod: snapshot.data!.docs[index]),
-                    ),
+                          thismod: snapshot.data!.docs[index], modId: snapshot.data!.docs[index].reference.id,
+                    ),),
                   );
                 },
               );
