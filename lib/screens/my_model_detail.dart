@@ -168,7 +168,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
     firestoreInstance
         .collection("users")
         .doc(currentUser?.uid)
-        .update({'recentlyUsed': widget.modId});
+        .update({'recentlyUsedId': widget.modId});
     firestoreInstance
         .collection("users")
         .doc(currentUser?.uid)
