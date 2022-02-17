@@ -39,6 +39,7 @@ class _ResultHistScreenState extends State<ResultHistScreen> {
                   .collection("users")
                   .doc(currentUser?.uid)
                   .collection("history")
+                  .orderBy('Timestamp', descending: true)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
@@ -83,8 +84,6 @@ class _ResultHistScreenState extends State<ResultHistScreen> {
                                     ),
                                     RichText(
                                       text: TextSpan(
-                                        // Note: Styles for TextSpans must be explicitly defined.
-                                        // Child text spans will inherit styles from parent
                                         style: const TextStyle(
                                           fontSize: 16,
                                           color: Colors.black,

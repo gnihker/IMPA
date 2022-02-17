@@ -47,15 +47,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
     List<int> _imageBytes = await selectedImage!.readAsBytes();
     String _base64Image = base64Encode(_imageBytes);
     var _label = widget.thismod['label'];
-    firestoreInstance
-        .collection("users")
-        .doc(currentUser?.uid)
-        .collection("history")
-        .add({
-      'label': _label,
-      'imgBase64': _base64Image,
-      'result': ans,
-    });
+    _addResultHistory(_label, _base64Image, ans);
     _addRecentlyUse();
     setState(() {
       Navigator.push(
@@ -82,15 +74,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
 
     /* SAVE THE RESULT TO FIREBASE*/
     var _label = widget.thismod['label'];
-    firestoreInstance
-        .collection("users")
-        .doc(currentUser?.uid)
-        .collection("history")
-        .add({
-      'label': _label,
-      'imgBase64': _base64Image,
-      'result': ans,
-    });
+    _addResultHistory(_label, _base64Image, ans);
     _addRecentlyUse();
     Navigator.push(
       context,
@@ -163,6 +147,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
         });
   }
 
+  //add Recently Used Model detail to firebase
   Future<void> _addRecentlyUse() async {
     firestoreInstance
         .collection("users")
@@ -174,6 +159,21 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
         .update({'recentlyUsedLabel': widget.thismod['label']});
   }
 
+  //add Result History to firebase
+  Future<void> _addResultHistory(_label, _base64Image, ans) async {
+    firestoreInstance
+        .collection("users")
+        .doc(currentUser?.uid)
+        .collection("history")
+        .add({
+      'label': _label,
+      'imgBase64': _base64Image,
+      'result': ans,
+      'Timestamp': Timestamp.now()
+    });
+  }
+
+  //Delete the model from firebase
   Future<void> _delete() async {
     firestoreInstance
         .collection("model_lib")

@@ -48,15 +48,7 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
     String _base64Image = base64Encode(_imageBytes);
 
     var _label = widget.thismod['label'];
-    firestoreInstance
-        .collection("users")
-        .doc(currentUser?.uid)
-        .collection("history")
-        .add({
-      'label': _label,
-      'imgBase64': _base64Image,
-      'result': ans,
-    });
+    _addResultHistory(_label, _base64Image, ans);
     _addRecentlyUse();
     setState(() {
       Navigator.push(
@@ -67,6 +59,30 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
         ),
       );
     });
+  }
+
+  void postBase64() async {
+    List<int> _imageBytes = await selectedImage!.readAsBytes();
+    String _base64Image = base64Encode(_imageBytes);
+    http.Response res = await http.post(
+      Uri.parse(widget.thismod['detail']['route']),
+      headers: {'Content-type': 'application/json'},
+      body: jsonEncode(
+        <String, String>{widget.thismod['detail']['key']: _base64Image},
+      ),
+    );
+    var ans = json.decode(res.body);
+
+    /* SAVE THE RESULT TO FIREBASE*/
+    var _label = widget.thismod['label'];
+    _addResultHistory(_label, _base64Image, ans);
+    _addRecentlyUse();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OutputScreen(image: pickedImage, ans: ans),
+      ),
+    );
   }
 
   void postPretrainedOCR() async {
@@ -90,15 +106,7 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
     String _base64Image = base64Encode(_imageBytes);
     print(_base64Image);
     var _label = widget.thismod['label'];
-    firestoreInstance
-        .collection("users")
-        .doc(currentUser?.uid)
-        .collection("history")
-        .add({
-      'label': _label,
-      'imgBase64': _base64Image,
-      'result': ans,
-    });
+    _addResultHistory(_label, _base64Image, ans);
     _addRecentlyUse();
     Navigator.push(
       context,
@@ -109,20 +117,8 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
     //});
   }
 
-  void postBase64() async {
-    List<int> _imageBytes = await selectedImage!.readAsBytes();
-    String _base64Image = base64Encode(_imageBytes);
-    http.Response res = await http.post(
-      Uri.parse(widget.thismod['detail']['route']),
-      headers: {'Content-type': 'application/json'},
-      body: jsonEncode(
-        <String, String>{widget.thismod['detail']['key']: _base64Image},
-      ),
-    );
-    var ans = json.decode(res.body);
-
-    /* SAVE THE RESULT TO FIREBASE*/
-    var _label = widget.thismod['label'];
+  //add Result History to firebase
+  Future<void> _addResultHistory(_label, _base64Image, ans) async {
     firestoreInstance
         .collection("users")
         .doc(currentUser?.uid)
@@ -131,14 +127,8 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
       'label': _label,
       'imgBase64': _base64Image,
       'result': ans,
+      'Timestamp': Timestamp.now()
     });
-    _addRecentlyUse();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OutputScreen(image: pickedImage, ans: ans),
-      ),
-    );
   }
 
   Future<void> _addRecentlyUse() async {
