@@ -30,6 +30,7 @@ class _AddNewModelScreenState extends State<AddNewModelScreen> {
       'detail': _detailResponse,
       'detailRoute': _url,
       'owner': currentUser?.uid,
+      'timestamp': Timestamp.now(),
     });
   }
 

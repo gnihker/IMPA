@@ -45,12 +45,21 @@ Widget _buildModelList(BuildContext context) {
 
   return Container(
     child: StreamBuilder(
-        stream: firestoreInstance.collection("model_lib").where('owner',isEqualTo: currentUser?.uid).snapshots(),
+        stream: firestoreInstance
+            .collection("model_lib")
+            .where('owner', isEqualTo: currentUser?.uid)
+            .orderBy('timestamp', descending: false)
+            .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
+            //return const Center(
+            //  child: CircularProgressIndicator(),
+            //);
             return const Center(
-              child: CircularProgressIndicator(),
-            );
+                child: Text(
+              'You have no model',
+              style: TextStyle(color: Colors.grey),
+            ));
           }
           return ListView.separated(
             itemCount: snapshot.data!.docs.length,
@@ -68,8 +77,10 @@ Widget _buildModelList(BuildContext context) {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ModelDetailScreen(
-                          thismod: snapshot.data!.docs[index], modId: snapshot.data!.docs[index].reference.id,
-                    ),),
+                        thismod: snapshot.data!.docs[index],
+                        modId: snapshot.data!.docs[index].reference.id,
+                      ),
+                    ),
                   );
                 },
               );
