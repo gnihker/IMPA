@@ -69,19 +69,18 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
   }
 
   void postBase64() async {
-    List<int> imageBytes = await selectedImage!.readAsBytes();
-    String base64Image = base64Encode(imageBytes);
+    List<int> _imageBytes = await selectedImage!.readAsBytes();
+    String _base64Image = base64Encode(_imageBytes);
     http.Response res = await http.post(
       Uri.parse(widget.thismod['detail']['route']),
-      body: jsonEncode(<String, Map<String, String>>{
-        widget.thismod['key']: {'content': base64Image},
-      }),
+      headers: {'Content-type': 'application/json'},
+      body: jsonEncode(
+        <String, String>{widget.thismod['detail']['key']: _base64Image},
+      ),
     );
     var ans = json.decode(res.body);
 
     /* SAVE THE RESULT TO FIREBASE*/
-    List<int> _imageBytes = await selectedImage!.readAsBytes();
-    String _base64Image = base64Encode(_imageBytes);
     var _label = widget.thismod['label'];
     firestoreInstance
         .collection("users")
@@ -332,7 +331,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Key value: ' + widget.thismod['detail']['method'],
+                      'Key value: ' + widget.thismod['detail']['key'],
                       style: const TextStyle(fontSize: 16),
                     ),
                   ],

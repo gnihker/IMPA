@@ -46,6 +46,7 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
     /* SAVE THE RESULT TO FIREBASE*/
     List<int> _imageBytes = await selectedImage!.readAsBytes();
     String _base64Image = base64Encode(_imageBytes);
+
     var _label = widget.thismod['label'];
     firestoreInstance
         .collection("users")
@@ -87,6 +88,7 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
     /* SAVE THE RESULT TO FIREBASE*/
     List<int> _imageBytes = await selectedImage!.readAsBytes();
     String _base64Image = base64Encode(_imageBytes);
+    print(_base64Image);
     var _label = widget.thismod['label'];
     firestoreInstance
         .collection("users")
@@ -108,19 +110,18 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
   }
 
   void postBase64() async {
-    List<int> imageBytes = await selectedImage!.readAsBytes();
-    String base64Image = base64Encode(imageBytes);
+    List<int> _imageBytes = await selectedImage!.readAsBytes();
+    String _base64Image = base64Encode(_imageBytes);
     http.Response res = await http.post(
       Uri.parse(widget.thismod['detail']['route']),
-      body: jsonEncode(<String, Map<String, String>>{
-        widget.thismod['key']: {'content': base64Image},
-      }),
+      headers: {'Content-type': 'application/json'},
+      body: jsonEncode(
+        <String, String>{widget.thismod['detail']['key']: _base64Image},
+      ),
     );
     var ans = json.decode(res.body);
 
     /* SAVE THE RESULT TO FIREBASE*/
-    List<int> _imageBytes = await selectedImage!.readAsBytes();
-    String _base64Image = base64Encode(_imageBytes);
     var _label = widget.thismod['label'];
     firestoreInstance
         .collection("users")
