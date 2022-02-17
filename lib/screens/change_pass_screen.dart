@@ -132,19 +132,6 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 30),
-                    //old password
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'OLD PASSWORD',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(height: 6),
-                        oldPasswordField,
-                      ],
-                    ),
-                    const SizedBox(height: 16),
                     //new password1
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,12 +163,6 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           _changePassword(newPasswordController.text);
-                          //showDialog(
-                          //  barrierDismissible: false,
-                          //  context: context,
-                          //  builder: (BuildContext context) =>
-                          //      _buildChangePopupDialog(context),
-                          //);
                         },
                         child: const Text(
                           'Change password',

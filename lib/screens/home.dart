@@ -113,12 +113,12 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: const Color.fromRGBO(63, 24, 149, 1),
         ),
         body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("lib/assets/images/bghome.png"),
-              fit: BoxFit.fill,
-            ),
-          ),
+          //decoration: const BoxDecoration(
+          //image: DecorationImage(
+          //image: AssetImage("lib/assets/images/bghome.png"),
+          //fit: BoxFit.fill,
+          //),
+          //),
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
               : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -210,114 +210,68 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 const Color.fromRGBO(
                                                     255, 197, 49, 1))),
                                     child: const Text(
-                                      'No recently use model',
+                                      'No recently used model',
                                       style: TextStyle(
                                           fontSize: 16, letterSpacing: 0.5),
                                     ),
                                     onPressed: () {},
                                   );
-                                }
-                                return ListView.builder(
-                                  itemCount: snapshot.data!.docs.length,
-                                  itemBuilder: (context, index) {
-                                    return ElevatedButton(
-                                      style: ButtonStyle(
-                                          alignment: Alignment.centerLeft,
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  const Color.fromRGBO(
-                                                      255, 197, 49, 1))),
-                                      child: Text(
-                                        snapshot.data!.docs[index]['label'],
-                                        style: const TextStyle(
-                                            fontSize: 16, letterSpacing: 0.5),
-                                      ),
-                                      onPressed: () {
-                                        _isLoading = true;
-                                        if (snapshot.data!.docs[index]
-                                                ['owner'] ==
-                                            'impa') {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ModelLibraryDetailScreen(
-                                                thismod:
-                                                    snapshot.data!.docs[index],
-                                                modId: snapshot.data!
-                                                    .docs[index].reference.id,
-                                              ),
-                                            ),
-                                          ).then((value) => _getRecentlyUsed());
-                                        } else {
+                                } else {
+                                  return ListView.builder(
+                                    itemCount: snapshot.data!.docs.length,
+                                    itemBuilder: (context, index) {
+                                      return ElevatedButton(
+                                        style: ButtonStyle(
+                                            alignment: Alignment.centerLeft,
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    const Color.fromRGBO(
+                                                        255, 197, 49, 1))),
+                                        child: Text(
+                                          snapshot.data!.docs[index]['label'],
+                                          style: const TextStyle(
+                                              fontSize: 16, letterSpacing: 0.5),
+                                        ),
+                                        onPressed: () {
                                           _isLoading = true;
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ModelDetailScreen(
-                                                thismod:
-                                                    snapshot.data!.docs[index],
-                                                modId: snapshot.data!
-                                                    .docs[index].reference.id,
+                                          if (snapshot.data!.docs[index]
+                                                  ['owner'] ==
+                                              'impa') {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ModelLibraryDetailScreen(
+                                                  thismod: snapshot
+                                                      .data!.docs[index],
+                                                  modId: snapshot.data!
+                                                      .docs[index].reference.id,
+                                                ),
                                               ),
-                                            ),
-                                          ).then((value) => _getRecentlyUsed());
-                                        }
-                                      },
-                                    );
-                                  },
-                                );
+                                            ).then(
+                                                (value) => _getRecentlyUsed());
+                                          } else {
+                                            _isLoading = true;
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ModelDetailScreen(
+                                                  thismod: snapshot
+                                                      .data!.docs[index],
+                                                  modId: snapshot.data!
+                                                      .docs[index].reference.id,
+                                                ),
+                                              ),
+                                            ).then(
+                                                (value) => _getRecentlyUsed());
+                                          }
+                                        },
+                                      );
+                                    },
+                                  );
+                                }
                               }),
-//                             ElevatedButton(
-//                             onPressed: () {
-//                               // Navigator.push(
-//                               //   context,
-//                               //   MaterialPageRoute(
-//                               //     builder: (context) =>
-//                               //         ModelDetailScreen(thismod: dummyModels[0]),
-//                               //   ),
-//                               // );
-//                               if (_recentlyUsedId == 0 &&
-//                                   _recentlyUsedLabel == 'None') {
-//                                 //nothing
-//                               } else {
-//                                 if (_recentlyUsed == 'impa') {
-//                                   Navigator.push(
-//                                     context,
-//                                     MaterialPageRoute(
-//                                       builder: (context) =>
-//                                           ModelLibraryDetailScreen(
-//                                               thismod: _recentlyUsed,
-//                                               modId: _recentlyUsedId),
-//                                     ),
-//                                   );
-//                                 } else {
-//                                   Navigator.push(
-//                                     context,
-//                                     MaterialPageRoute(
-//                                       builder: (context) => ModelDetailScreen(
-//                                           thismod: _recentlyUsed,
-//                                           modId: _recentlyUsedId),
-//                                     ),
-//                                   );
-//                                 }
-//                               }
-// //ต้องเขียนโค้ด 1.เช็คว่า _recent ตอนนี้ชื่ออะไร ถ้าชื่อNone, Id=0 ให้กดไม่ไป
-// //2.เช็คว่า owner เป็นใคร ถ้าเป้น impa ต้องไปที่ model_library_detail นอกนั้นไป my_model_detail
-//                               //Navigator.pushNamed(context, '/test');
-//                               //_getRecentlyUsed();
-//                             },
-//                             //child: const Text(
-//                             //  'Leaf classification',
-//                             //  style: TextStyle(fontSize: 16),
-//                             //),
-//                             child: Text(_recentlyUsedLabel),
-//                             style: ButtonStyle(
-//                                 alignment: Alignment.centerLeft,
-//                                 backgroundColor: MaterialStateProperty.all(
-//                                     const Color.fromRGBO(255, 214, 0, 1))),
-//                           ),
                         ),
                       ]),
                 ]),
