@@ -41,7 +41,8 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
 
     final response = await request.send();
     http.Response res = await http.Response.fromStream(response);
-    var ans = json.decode(res.body);
+    var ans = jsonDecode(utf8.decode(res.bodyBytes));
+    //var ans = json.decode(res.body);
 
     /* SAVE THE RESULT TO FIREBASE*/
     List<int> _imageBytes = await selectedImage!.readAsBytes();
@@ -71,7 +72,7 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
         <String, String>{widget.thismod['detail']['key']: _base64Image},
       ),
     );
-    var ans = json.decode(res.body);
+    var ans = jsonDecode(utf8.decode(res.bodyBytes));
 
     /* SAVE THE RESULT TO FIREBASE*/
     var _label = widget.thismod['label'];
@@ -104,7 +105,6 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
     /* SAVE THE RESULT TO FIREBASE*/
     List<int> _imageBytes = await selectedImage!.readAsBytes();
     String _base64Image = base64Encode(_imageBytes);
-    print(_base64Image);
     var _label = widget.thismod['label'];
     _addResultHistory(_label, _base64Image, ans);
     _addRecentlyUse();
@@ -114,7 +114,6 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
         builder: (context) => OutputScreen(image: pickedImage, ans: ans),
       ),
     );
-    //});
   }
 
   //add Result History to firebase

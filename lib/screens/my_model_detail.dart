@@ -41,7 +41,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
 
     final response = await request.send();
     http.Response res = await http.Response.fromStream(response);
-    var ans = json.decode(res.body);
+    var ans = jsonDecode(utf8.decode(res.bodyBytes));
 
     /* SAVE THE RESULT TO FIREBASE*/
     List<int> _imageBytes = await selectedImage!.readAsBytes();
@@ -70,7 +70,7 @@ class _ModelDetailScreenState extends State<ModelDetailScreen> {
         <String, String>{widget.thismod['detail']['key']: _base64Image},
       ),
     );
-    var ans = json.decode(res.body);
+    var ans = jsonDecode(utf8.decode(res.bodyBytes));
 
     /* SAVE THE RESULT TO FIREBASE*/
     var _label = widget.thismod['label'];
