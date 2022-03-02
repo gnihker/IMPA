@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const LandingScreen(),
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
         '/login': (ctx) => const LoginScreen(),

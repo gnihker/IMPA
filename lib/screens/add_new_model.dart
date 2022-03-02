@@ -174,7 +174,7 @@ class _AddNewModelScreenState extends State<AddNewModelScreen> {
                   //example section
                   const SizedBox(height: 16),
                   const SizedBox(
-                    child: Text('What\'is the Detail Endpoint Route?',
+                    child: Text('What is the Detail Endpoint Route?',
                         style: TextStyle(fontSize: 16)),
                   ),
                   const SizedBox(height: 2),
@@ -196,7 +196,7 @@ class _AddNewModelScreenState extends State<AddNewModelScreen> {
                     padding: const EdgeInsets.all(12),
                     color: Colors.grey[350],
                     child: const Text(
-                        "method = POST\n(our application only support models using POST method)\nroute = model image submission route\nkey = key using in the request body\nimg_type = file or base64\ndescription = model description"),
+                        "method = POST\n(our application only support POST method)\nroute = model image submission route\nkey = key using in the request body\nimg_type = file or base64\ndescription = model description"),
                   ),
                   const SizedBox(height: 16),
                   const SizedBox(
