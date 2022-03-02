@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 class ResultHistScreen extends StatefulWidget {
   const ResultHistScreen({Key? key}) : super(key: key);
 
@@ -76,6 +75,27 @@ class _ResultHistScreenState extends State<ResultHistScreen> {
                                           TextSpan(
                                             text: snapshot.data!.docs[index]
                                                 ['label'],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                        ),
+                                        children: <TextSpan>[
+                                          const TextSpan(
+                                              text: 'Date: ',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold)),
+                                          TextSpan(
+                                            text: DateTime.parse(snapshot.data!
+                                                    .docs[index]['Timestamp']
+                                                    .toDate()
+                                                    .toString())
+                                                .toString(),
                                           ),
                                         ],
                                       ),
