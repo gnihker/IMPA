@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
 
 class OutputScreen extends StatelessWidget {
   const OutputScreen({Key? key, required this.image, required this.ans})
@@ -113,11 +114,25 @@ class OutputScreen extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           'Output',
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: ans.toString()));
+                            },
+                            child: const Text('Copy All'),
+                            style: ButtonStyle(
+                                alignment: Alignment.centerLeft,
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color.fromRGBO(255, 197, 49, 1))),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -131,7 +146,7 @@ class OutputScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Flexible(
-                              child: Text(
+                              child: SelectableText(
                                 ans.toString(),
                                 style: const TextStyle(fontSize: 16),
                               ),
