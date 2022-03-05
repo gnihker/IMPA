@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../models/dummy_models.dart';
 import 'model_library_detail.dart';
 import 'my_model_detail.dart';
 
@@ -82,20 +81,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   value: 0,
                 ),
                 const PopupMenuItem(
-                  child: Text('Change password',
-                      style: TextStyle(
-                        color: Color.fromRGBO(105, 55, 212, 1),
-                        fontSize: 14,
-                      )),
+                  child: Text(
+                    'Change password',
+                    style: TextStyle(
+                      color: Color.fromRGBO(105, 55, 212, 1),
+                      fontSize: 14,
+                    ),
+                  ),
                   value: 1,
                 ),
                 const PopupMenuItem(
-                  child: Text('Logout',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 14,
-                      )),
+                  child: Text(
+                    'About us',
+                    style: TextStyle(
+                      color: Color.fromRGBO(105, 55, 212, 1),
+                      fontSize: 14,
+                    ),
+                  ),
                   value: 2,
+                ),
+                const PopupMenuItem(
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 14,
+                    ),
+                  ),
+                  value: 3,
                 ),
               ],
               onSelected: (result) {
@@ -104,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 } else if (result == 1) {
                   Navigator.pushNamed(context, '/changepass');
                 } else if (result == 2) {
-                  //Navigator.popAndPushNamed(context, '/login');
+                  Navigator.pushNamed(context, '/aboutus');
+                } else if (result == 3) {
                   _logOut();
                 }
               },

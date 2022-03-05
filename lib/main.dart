@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application/screens/about_us.dart';
 import 'package:flutter_application/screens/test.dart';
 import 'screens/add_new_model.dart';
 import 'screens/change_pass_screen.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         '/mymodels': (ctx) => const MyModelsScreen(),
         '/modellib': (ctx) => const ModelLibraryScreen(),
         '/test': (ctx) => const TestScreen(),
+        '/aboutus': (ctx) => const AboutUsScreen(),
       },
     );
   }

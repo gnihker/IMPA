@@ -20,7 +20,6 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
   final _formKey = GlobalKey<FormState>();
 
   void _changePassword(String password) async {
-    //ตอนนี้ฟังก์ชันนี้ยังไม่ได้เช็คว่า current password ที่ใส่ไปถูกมั้ย
     var currentUser = FirebaseAuth.instance.currentUser;
 
     if (_formKey.currentState!.validate()) {
