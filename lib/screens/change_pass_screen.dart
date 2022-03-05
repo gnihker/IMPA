@@ -183,30 +183,3 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
   }
 }
 
-Widget _buildChangePopupDialog(BuildContext context) {
-  return AlertDialog(
-    title: const Text(
-      'Password changed successfully!',
-      textAlign: TextAlign.center,
-    ),
-    actions: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).popUntil(ModalRoute.withName('/home'));
-            },
-            child: const Text(
-              'Close',
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                    const Color.fromRGBO(255, 214, 0, 1))),
-          ),
-        ],
-      ),
-    ],
-  );
-}
