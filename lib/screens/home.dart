@@ -127,12 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: const Color.fromRGBO(63, 24, 149, 1),
         ),
         body: Container(
-          //decoration: const BoxDecoration(
-          //image: DecorationImage(
-          //image: AssetImage("lib/assets/images/bghome.png"),
-          //fit: BoxFit.fill,
-          //),
-          //),
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
               : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
