@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       autofocus: false,
       autocorrect: false,
-      textInputAction: TextInputAction.next,
+      textInputAction: TextInputAction.done,
       decoration: const InputDecoration(
         filled: true,
         fillColor: Colors.white,
