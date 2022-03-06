@@ -52,7 +52,7 @@ class _ResultHistScreenState extends State<ResultHistScreen> {
         sheet.cell(CellIndex.indexByString("A1")).value = 'Timestamp';
         sheet.cell(CellIndex.indexByString("B1")).value = 'Model Label';
         sheet.cell(CellIndex.indexByString("C1")).value = 'Result';
-        sheet.cell(CellIndex.indexByString("C1")).value = 'Image';
+        sheet.cell(CellIndex.indexByString("D1")).value = 'Image';
         for (int i = 0; i < _qs.docs.length; i++) {
           var cellTimestamp =
               sheet.cell(CellIndex.indexByString("A" + (i + 2).toString()));
