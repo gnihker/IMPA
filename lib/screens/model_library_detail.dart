@@ -264,7 +264,7 @@ class _ModelLibraryDetailScreenState extends State<ModelLibraryDetailScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Key value: ' + widget.thismod['detail']['method'],
+                      'Method: ' + widget.thismod['detail']['method'],
                       style: const TextStyle(fontSize: 16),
                     ),
                   ],
