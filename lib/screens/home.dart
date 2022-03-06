@@ -210,20 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               builder: (context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
                                 if (!snapshot.hasData) {
-                                  return ElevatedButton(
-                                    style: ButtonStyle(
-                                        alignment: Alignment.centerLeft,
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                const Color.fromRGBO(
-                                                    255, 197, 49, 1))),
-                                    child: const Text(
-                                      'No recently used model',
-                                      style: TextStyle(
-                                          fontSize: 16, letterSpacing: 0.5),
-                                    ),
-                                    onPressed: () {},
-                                  );
+                                  return const Text('');
                                 } else {
                                   return ListView.builder(
                                     itemCount: snapshot.data!.docs.length,
